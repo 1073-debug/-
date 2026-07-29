@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>けいさんアドベンチャー</title>
+<meta name="theme-color" content="#3DAA6B">
+<meta name="description" content="キャラクターを育てるために計算する、こどものための学習アドベンチャー">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="toast" class="toast"></div>
+<div id="achievement-overlay" class="achievement-overlay"></div>
+
+<!-- ===================== HOME ===================== -->
+<section id="view-home" class="view active">
+  <header class="topbar">
+    <div class="topbar-title">けいさん<span class="accent">アドベンチャー</span></div>
+    <div class="topbar-coins" id="home-coins">🪙 0</div>
+  </header>
+
+  <div class="home-mascot-wrap" id="home-mascot"></div>
+
+  <div class="home-status-card">
+    <div class="home-status-row">
+      <span class="home-name" id="home-charname">そうくん</span>
+      <span class="home-level" id="home-level">Lv.1</span>
+    </div>
+    <div class="xp-bar-track">
+      <div class="xp-bar-fill" id="home-xpfill" style="width:0%"></div>
+    </div>
+    <div class="xp-bar-label" id="home-xplabel">0 / 50 XP</div>
+  </div>
+
+  <div class="daily-card" id="daily-card">
+    <div class="daily-card-title">🔥 <span id="daily-streak">1</span>にち れんぞく ログイン！</div>
+    <div class="daily-challenge" id="daily-challenge-box"></div>
+  </div>
+
+  <button class="btn btn-main" id="btn-start-study">
+    <span class="btn-main-emoji">📚</span>
+    <span>べんきょうする！</span>
+  </button>
+
+  <div class="home-quick-grid">
+    <button class="quick-btn" id="btn-goto-character"><span>🧝</span>そうび</button>
+    <button class="quick-btn" id="btn-goto-gacha"><span>🎁</span>ガチャ</button>
+    <button class="quick-btn" id="btn-goto-history"><span>📈</span>きろく</button>
+  </div>
+
+  <button class="parent-link" id="btn-goto-parent">👪 保護者のかたへ</button>
+</section>
+
+<!-- ===================== SELECT ===================== -->
+<section id="view-select" class="view">
+  <header class="topbar">
+    <button class="back-btn" data-back="view-home">←</button>
+    <div class="topbar-title">なにを べんきょうする？</div>
+    <div style="width:36px"></div>
+  </header>
+
+  <div class="select-section">
+    <div class="select-label">① きょうかを えらぶ</div>
+    <div class="subject-grid" id="subject-grid"></div>
+  </div>
+
+  <div class="select-section">
+    <div class="select-label">② なんきゅう？</div>
+    <div class="segment-group" id="difficulty-group"></div>
+  </div>
+
+  <div class="select-section">
+    <div class="select-label">③ もんだいすう</div>
+    <div class="segment-group" id="count-group"></div>
+  </div>
+
+  <button class="btn btn-main" id="btn-begin-quiz">
+    <span class="btn-main-emoji">🚀</span>
+    <span>はじめる！</span>
+  </button>
+</section>
+
+<!-- ===================== QUIZ ===================== -->
+<section id="view-quiz" class="view">
+  <header class="topbar">
+    <button class="back-btn" id="btn-quit-quiz">✕</button>
+    <div class="quiz-progress-track">
+      <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
+    </div>
+    <div class="quiz-progress-label" id="quiz-progress-label">1/10</div>
+  </header>
+
+  <div class="quiz-body">
+    <div class="quiz-review-tag" id="quiz-review-tag" style="display:none">🔁 ふくしゅう もんだい</div>
+    <div class="quiz-problem-card" id="quiz-problem-card">
+      <div class="quiz-problem-text" id="quiz-problem-text">3 + 4</div>
+      <div class="quiz-answer-display" id="quiz-answer-display">&nbsp;</div>
+    </div>
+
+    <div class="numpad" id="numpad">
+      <button class="num-btn" data-num="7">7</button>
+      <button class="num-btn" data-num="8">8</button>
+      <button class="num-btn" data-num="9">9</button>
+      <button class="num-btn" data-num="4">4</button>
+      <button class="num-btn" data-num="5">5</button>
+      <button class="num-btn" data-num="6">6</button>
+      <button class="num-btn" data-num="1">1</button>
+      <button class="num-btn" data-num="2">2</button>
+      <button class="num-btn" data-num="3">3</button>
+      <button class="num-btn num-btn-del" data-action="del">⌫</button>
+      <button class="num-btn" data-num="0">0</button>
+      <button class="num-btn num-btn-ok" data-action="ok">✓</button>
+    </div>
+  </div>
+
+  <div class="quiz-feedback" id="quiz-feedback"></div>
+</section>
+
+<!-- ===================== RESULT ===================== -->
+<section id="view-result" class="view">
+  <header class="topbar">
+    <div style="width:36px"></div>
+    <div class="topbar-title">けっか</div>
+    <div style="width:36px"></div>
+  </header>
+
+  <div class="result-score-ring" id="result-score-ring">
+    <div class="result-score-num" id="result-score-num">0</div>
+    <div class="result-score-sub">てん</div>
+  </div>
+
+  <div class="result-stats-grid">
+    <div class="result-stat"><div class="result-stat-label">せいかい</div><div class="result-stat-value" id="result-correct">0/0</div></div>
+    <div class="result-stat"><div class="result-stat-label">へいきん じかん</div><div class="result-stat-value" id="result-time">0びょう</div></div>
+  </div>
+
+  <div class="result-rewards">
+    <div class="reward-pill">✨ XP +<span id="result-xp">0</span></div>
+    <div class="reward-pill">🪙 +<span id="result-coins">0</span></div>
+  </div>
+
+  <button class="btn btn-main" id="btn-result-home">
+    <span class="btn-main-emoji">🏠</span>
+    <span>ホームに もどる</span>
+  </button>
+  <button class="btn btn-secondary" id="btn-result-again">もういちど べんきょうする</button>
+</section>
+
+<!-- ===================== CHARACTER / EQUIP ===================== -->
+<section id="view-character" class="view">
+  <header class="topbar">
+    <button class="back-btn" data-back="view-home">←</button>
+    <div class="topbar-title">そうび</div>
+    <div style="width:36px"></div>
+  </header>
+
+  <div class="char-mascot-wrap" id="char-mascot"></div>
+
+  <div class="equip-slots" id="equip-slots"></div>
+
+  <div class="inventory-panel" id="inventory-panel">
+    <div class="select-label" id="inventory-slot-label">もちもの</div>
+    <div class="inventory-grid" id="inventory-grid"></div>
+  </div>
+</section>
+
+<!-- ===================== GACHA ===================== -->
+<section id="view-gacha" class="view">
+  <header class="topbar">
+    <button class="back-btn" data-back="view-home">←</button>
+    <div class="topbar-title">ガチャ</div>
+    <div class="topbar-coins" id="gacha-coins">🪙 0</div>
+  </header>
+
+  <div class="gacha-machine">🎁</div>
+  <p class="gacha-desc">べんきょうで ためた コインで<br>そうびを ゲットしよう！</p>
+
+  <button class="btn btn-main" id="btn-pull-gacha">
+    <span class="btn-main-emoji">🎁</span>
+    <span>ガチャをひく（100コイン）</span>
+  </button>
+
+  <div class="gacha-reveal" id="gacha-reveal"></div>
+</section>
+
+<!-- ===================== HISTORY ===================== -->
+<section id="view-history" class="view">
+  <header class="topbar">
+    <button class="back-btn" data-back="view-home">←</button>
+    <div class="topbar-title">がくしゅう きろく</div>
+    <div style="width:36px"></div>
+  </header>
+
+  <div class="history-summary-grid" id="history-summary-grid"></div>
+
+  <div class="select-label">さいきんの きろく</div>
+  <div class="history-list" id="history-list"></div>
+
+  <div class="select-label">🏅 バッジ</div>
+  <div class="badge-grid" id="badge-grid"></div>
+</section>
+
+<!-- ===================== PARENT GATE ===================== -->
+<section id="view-parent-gate" class="view">
+  <header class="topbar">
+    <button class="back-btn" data-back="view-home">←</button>
+    <div class="topbar-title">保護者のかたへ</div>
+    <div style="width:36px"></div>
+  </header>
+  <div class="parent-gate-card">
+    <p>お子様が誤って入らないための確認です。</p>
+    <p class="parent-gate-question" id="parent-gate-question">7 × 8 = ?</p>
+    <input type="number" class="parent-gate-input" id="parent-gate-input" placeholder="こたえ">
+    <button class="btn btn-main" id="btn-parent-gate-submit">すすむ</button>
+    <p class="parent-gate-error" id="parent-gate-error" style="display:none">こたえが ちがいます</p>
+  </div>
+</section>
+
+<!-- ===================== PARENT DASHBOARD ===================== -->
+<section id="view-parent" class="view">
+  <header class="topbar">
+    <button class="back-btn" data-back="view-home">←</button>
+    <div class="topbar-title">保護者ダッシュボード</div>
+    <div style="width:36px"></div>
+  </header>
+
+  <div class="parent-grid" id="parent-grid"></div>
+
+  <div class="select-label">正答率の推移（直近セッション）</div>
+  <div class="parent-chart-card" id="parent-chart"></div>
+
+  <div class="select-label">きょうか別 せいかいりつ</div>
+  <div class="parent-subject-list" id="parent-subject-list"></div>
+
+  <div class="parent-note">
+    <p>💡 「わりざん」の せいかいりつが 低い場合は、九九の復習から始めると効果的です。</p>
+  </div>
+</section>
+
+<!-- ===================== BOTTOM NAV ===================== -->
+<nav class="bottom-nav" id="bottom-nav">
+  <button class="nav-item active" data-nav="view-home"><span>🏠</span>ホーム</button>
+  <button class="nav-item" data-nav="view-character"><span>🧝</span>そうび</button>
+  <button class="nav-item" data-nav="view-gacha"><span>🎁</span>ガチャ</button>
+  <button class="nav-item" data-nav="view-history"><span>📈</span>きろく</button>
+</nav>
+
+<script src="js/storage.js"></script>
+<script src="js/problems.js"></script>
+<script src="js/gacha.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
